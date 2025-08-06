@@ -56,7 +56,7 @@ export const FashionCarousel = () => {
       </nav>
 
       {/* Side Text */}
-      <div className="absolute left-8 top-1/2 transform -translate-y-1/2 z-10 max-w-xs">
+      <div className="absolute left-8 top-1/3 transform -translate-y-1/2 z-10 max-w-xs">
         <p className="text-foreground/60 text-sm leading-relaxed">
           At Zevana, we craft dresses that move with grace and speak with style. From conceptual artistry to visual discourse — designed to make every woman feel effortlessly beautiful.
         </p>
