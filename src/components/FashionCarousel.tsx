@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import fashion1 from '@/assets/fashion-1.jpg';
 import fashion2 from '@/assets/fashion-2.jpg';
 import fashion3 from '@/assets/fashion-3.jpg';
@@ -15,127 +14,119 @@ const fashionImages = [
 ];
 
 export const FashionCarousel = () => {
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [animationPhase, setAnimationPhase] = useState<'initial' | 'slide-up' | 'arrange'>('initial');
+  const [animationPhase, setAnimationPhase] = useState<'hidden' | 'stacked' | 'spread'>('hidden');
 
-  const startAnimation = () => {
-    setIsAnimating(true);
-    setAnimationPhase('slide-up');
-    
-    setTimeout(() => {
-      setAnimationPhase('arrange');
-    }, 1000);
-  };
+  useEffect(() => {
+    // Start animation sequence automatically
+    const timer1 = setTimeout(() => {
+      setAnimationPhase('stacked');
+    }, 500);
 
-  const resetAnimation = () => {
-    setIsAnimating(false);
-    setAnimationPhase('initial');
-  };
+    const timer2 = setTimeout(() => {
+      setAnimationPhase('spread');
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-dark flex flex-col items-center justify-center px-4 py-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <div className="w-2 h-2 bg-luxury-gold rounded-full animate-pulse"></div>
-          <h1 className="text-4xl md:text-6xl font-light tracking-widest text-luxury-gold">
-            ZEVANA
-          </h1>
-          <div className="w-2 h-2 bg-luxury-gold rounded-full animate-pulse"></div>
+    <div className="min-h-screen bg-gradient-dark relative overflow-hidden">
+      {/* Navigation Header */}
+      <nav className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-6">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-luxury-gold rounded-full flex items-center justify-center">
+            <div className="w-3 h-3 bg-luxury-dark rounded-full"></div>
+          </div>
+          <h1 className="text-2xl font-light tracking-widest text-luxury-gold">ZEVANA</h1>
         </div>
-        <p className="text-foreground/80 text-sm md:text-base max-w-md mx-auto leading-relaxed">
-          At Zevana, we craft dreams that move with grace and speak with style. From conceptual artistry to visual discourse — designed to make every woman feel extraordinary.
+        <div className="flex items-center gap-4">
+          <button className="w-10 h-10 rounded-full border border-luxury-border/30 flex items-center justify-center hover:bg-luxury-surface/20 transition-colors">
+            <div className="w-4 h-4 rounded-full border border-luxury-gold"></div>
+          </button>
+          <button className="w-10 h-10 rounded-full border border-luxury-border/30 flex items-center justify-center hover:bg-luxury-surface/20 transition-colors">
+            <div className="w-3 h-3 bg-luxury-gold rounded-full"></div>
+          </button>
+          <button className="px-4 py-2 rounded-full border border-luxury-border/30 text-foreground/60 text-sm hover:bg-luxury-surface/20 transition-colors">
+            Contact
+          </button>
+        </div>
+      </nav>
+
+      {/* Side Text */}
+      <div className="absolute left-8 top-1/2 transform -translate-y-1/2 z-10 max-w-xs">
+        <p className="text-foreground/60 text-sm leading-relaxed">
+          At Zevana, we craft dresses that move with grace and speak with style. From conceptual artistry to visual discourse — designed to make every woman feel effortlessly beautiful.
         </p>
       </div>
 
-      {/* Main Heading */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-5xl font-light text-foreground mb-2 tracking-wide">
+      <div className="absolute right-8 top-1/2 transform -translate-y-1/2 z-10 text-right max-w-xs">
+        <h2 className="text-4xl md:text-5xl font-light text-foreground mb-2 tracking-wide leading-tight">
           DESIGNED TO MAKE
-        </h2>
-        <h3 className="text-3xl md:text-5xl font-light text-foreground tracking-wide">
+          <br />
           AN ENTRANCE.
-        </h3>
+        </h2>
       </div>
 
-      {/* Carousel Container */}
-      <div className="relative w-full max-w-6xl h-96 mb-12">
-        <div className="absolute inset-0 flex items-center justify-center">
+      {/* Main Carousel Container */}
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="relative w-full max-w-4xl h-[600px]">
           {fashionImages.map((image, index) => {
-            let animationClass = '';
-            let positionClass = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+            let positionClass = 'absolute transition-all duration-1000 ease-out';
+            let imageSize = 'w-48 h-64';
             
-            if (animationPhase === 'initial') {
-              positionClass += ' translate-y-full opacity-0';
-            } else if (animationPhase === 'slide-up') {
-              animationClass = 'animate-slide-up';
-              positionClass = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
-            } else if (animationPhase === 'arrange') {
+            if (animationPhase === 'hidden') {
+              positionClass += ' top-full left-1/2 transform -translate-x-1/2 opacity-0';
+            } else if (animationPhase === 'stacked') {
+              positionClass += ' top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-100';
+              positionClass += ` z-${10 - index}`;
+            } else if (animationPhase === 'spread') {
               if (index === 0) {
-                animationClass = 'animate-slide-left';
-                positionClass = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+                // Far left
+                positionClass += ' top-1/2 left-8 transform -translate-y-1/2 opacity-100 rotate-[-8deg]';
+                imageSize = 'w-40 h-56';
               } else if (index === 1) {
-                animationClass = 'animate-slide-left';
-                positionClass = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+                // Left
+                positionClass += ' top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-1/2 opacity-100 rotate-[-4deg]';
+                imageSize = 'w-44 h-60';
               } else if (index === 2) {
-                // Center image stays
-                positionClass = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-float';
+                // Center (larger)
+                positionClass += ' top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-100 z-20';
+                imageSize = 'w-56 h-72';
               } else if (index === 3) {
-                animationClass = 'animate-slide-right';
-                positionClass = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+                // Right
+                positionClass += ' top-1/2 right-1/4 transform translate-x-1/2 -translate-y-1/2 opacity-100 rotate-[4deg]';
+                imageSize = 'w-44 h-60';
               } else if (index === 4) {
-                animationClass = 'animate-slide-right';
-                positionClass = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+                // Far right
+                positionClass += ' top-1/2 right-8 transform -translate-y-1/2 opacity-100 rotate-[8deg]';
+                imageSize = 'w-40 h-56';
               }
             }
 
             return (
               <div
                 key={image.id}
-                className={`${positionClass} ${animationClass}`}
+                className={positionClass}
                 style={{
-                  animationDelay: `${index * 0.1}s`,
-                  zIndex: index === 2 ? 10 : 5 - Math.abs(index - 2),
+                  transitionDelay: animationPhase === 'spread' ? `${index * 0.1}s` : '0s',
+                  zIndex: index === 2 ? 20 : 10 - Math.abs(index - 2),
                 }}
               >
                 <div className="relative group">
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-48 h-64 md:w-56 md:h-72 object-cover rounded-2xl shadow-card hover:shadow-luxury transition-all duration-500 border border-luxury-border/20"
+                    className={`${imageSize} object-cover rounded-2xl shadow-luxury hover:shadow-card transition-all duration-500 border border-luxury-border/20`}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-dark/60 via-transparent to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-dark/40 via-transparent to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
             );
           })}
         </div>
-      </div>
-
-      {/* Control Buttons */}
-      <div className="flex gap-4">
-        <Button
-          onClick={startAnimation}
-          disabled={isAnimating}
-          className="px-8 py-3 bg-luxury-surface border border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-dark transition-all duration-300 rounded-full font-light tracking-wider"
-        >
-          {isAnimating ? 'ANIMATING...' : 'START SHOW'}
-        </Button>
-        
-        <Button
-          onClick={resetAnimation}
-          variant="outline"
-          className="px-8 py-3 border border-luxury-border text-foreground hover:bg-luxury-surface transition-all duration-300 rounded-full font-light tracking-wider"
-        >
-          RESET
-        </Button>
-      </div>
-
-      {/* Navigation Dots */}
-      <div className="flex items-center gap-3 mt-8">
-        <div className="w-2 h-2 bg-luxury-gold rounded-full animate-pulse"></div>
-        <div className="w-8 h-1 bg-luxury-gold/60 rounded-full"></div>
-        <div className="w-2 h-2 bg-luxury-gold/40 rounded-full"></div>
       </div>
     </div>
   );
