@@ -62,7 +62,7 @@ export const FashionCarousel = () => {
         </p>
       </div>
 
-      <div className="absolute right-8 top-1/2 transform -translate-y-1/2 z-10 text-right max-w-xs">
+      <div className="absolute right-8 top-1/4 transform -translate-y-1/2 z-10 text-right max-w-xs">
         <h2 className="text-4xl md:text-5xl font-light text-foreground mb-2 tracking-wide leading-tight">
           DESIGNED TO MAKE
           <br />
